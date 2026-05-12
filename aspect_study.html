@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OSCAR · Aspect classification</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #0d1117;
+      --surface:   #f5f0e6;
+      --surface2:  #ece6d6;
+      --ink:       #1a1208;
+      --ink2:      #5a4e3a;
+      --gold:      #c9963a;
+      --gold-dim:  #7a5c20;
+      --green:     #2d7a4f;
+      --red:       #b03030;
+      --teal:      #1e7a7a;
+      --coral:     #c05840;
+      --border:    rgba(26,18,8,0.12);
+      --shadow:    0 24px 64px rgba(0,0,0,0.55), 0 4px 16px rgba(0,0,0,0.35);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 999;
+      opacity: 0.5;
+    }
+
+    #intro-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    #intro-screen.hidden { display: none; }
+
+    .intro-card {
+      max-width: 420px;
+      width: 100%;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      padding: 28px 24px;
+      border-radius: 2px;
+    }
+    .intro-card h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+    .intro-card p {
+      font-size: 0.9rem;
+      color: var(--ink2);
+      line-height: 1.55;
+      margin-bottom: 16px;
+    }
+    .intro-card label {
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink2);
+      margin-bottom: 6px;
+    }
+    .intro-card input[type="text"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      margin-bottom: 14px;
+    }
+    .intro-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .intro-actions button {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 12px 16px;
+      border: none;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+    }
+    .btn-primary {
+      background: var(--gold);
+      color: var(--bg);
+    }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-secondary {
+      background: var(--surface2);
+      color: var(--ink);
+      border: 1px solid var(--border) !important;
+    }
+    .intro-note {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--ink2);
+      margin-top: 14px;
+      line-height: 1.5;
+    }
+    .intro-error {
+      color: var(--red);
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+      display: none;
+    }
+    .intro-error.visible { display: block; }
+
+    #toolbar {
+      width: 100%;
+      max-width: 720px;
+      padding: 20px 24px 0;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 10;
+    }
+    #toolbar.visible { display: flex; }
+
+    #toolbar h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      color: var(--gold);
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      margin-right: 4px;
+    }
+
+    #progress-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: rgba(245,240,230,0.5);
+      margin-left: auto;
+      white-space: nowrap;
+    }
+
+    #obj-count, #sub-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    #obj-count { color: var(--teal); }
+    #sub-count { color: var(--coral); }
+
+    #progress-bar-wrap {
+      width: 100%;
+      max-width: 720px;
+      padding: 12px 24px 0;
+      display: none;
+    }
+    #progress-bar-wrap.visible { display: block; }
+    #progress-bar-track {
+      height: 2px;
+      background: rgba(245,240,230,0.08);
+      position: relative;
+    }
+    #progress-bar-fill {
+      height: 100%;
+      background: var(--gold);
+      transition: width 0.35s ease;
+      width: 0%;
+    }
+
+    #stage {
+      flex: 1;
+      width: 100%;
+      max-width: 720px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 24px 16px;
+      position: relative;
+    }
+
+    #empty {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    #empty .oscar-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 48px;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+    #empty p {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: rgba(245,240,230,0.35);
+      line-height: 1.8;
+    }
+
+    #done-msg {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    #done-msg h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    #done-msg p {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: rgba(245,240,230,0.6);
+      margin-bottom: 16px;
+    }
+    #done-dl-btn {
+      background: var(--gold);
+      color: var(--bg);
+      border: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 12px 32px;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      margin-top: 8px;
+    }
+    #done-dl-btn:hover { opacity: 0.88; }
+
+    #card-wrap {
+      width: 100%;
+      position: relative;
+      user-select: none;
+      display: none;
+    }
+    #card-wrap.visible { display: block; }
+
+    .expl-card {
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      width: 100%;
+      border-radius: 2px;
+      overflow: hidden;
+      cursor: grab;
+      transform-origin: center bottom;
+      transition: transform 0.08s ease;
+      will-change: transform;
+    }
+    .expl-card.grabbing { cursor: grabbing; }
+    .expl-card.fly-left  { transition: transform 0.38s cubic-bezier(0.4,0,0.6,1), opacity 0.38s ease; transform: translateX(-140%) rotate(-18deg) !important; opacity: 0; }
+    .expl-card.fly-right { transition: transform 0.38s cubic-bezier(0.4,0,0.6,1), opacity 0.38s ease; transform: translateX(140%) rotate(18deg) !important; opacity: 0; }
+
+    .hint-obj, .hint-sub {
+      position: absolute;
+      top: 20px;
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 600;
+      border: 3px solid;
+      padding: 4px 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.12s;
+      z-index: 5;
+      letter-spacing: 0.06em;
+    }
+    .hint-obj { left: 20px; color: var(--teal); border-color: var(--teal); transform: rotate(-6deg); }
+    .hint-sub { right: 20px; color: var(--coral); border-color: var(--coral); transform: rotate(6deg); }
+
+    .card-header {
+      background: var(--ink);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .card-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: rgba(245,240,230,0.45);
+    }
+    .card-meta strong { color: var(--gold); font-weight: 500; }
+
+    .card-body {
+      padding: 28px 24px 32px;
+      text-align: center;
+    }
+    .card-prompt {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink2);
+      margin-bottom: 16px;
+    }
+    .aspect-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.75rem, 5vw, 2.5rem);
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.25;
+      word-break: break-word;
+    }
+    .card-hint {
+      margin-top: 22px;
+      font-size: 0.88rem;
+      color: var(--ink2);
+      line-height: 1.5;
+    }
+
+    #actions {
+      display: none;
+      gap: 24px;
+      padding: 16px 0 8px;
+      align-items: center;
+      justify-content: center;
+    }
+    #actions.visible { display: flex; }
+
+    .action-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      background: none;
+      border: 2px solid;
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      cursor: pointer;
+      justify-content: center;
+      transition: transform 0.15s, background 0.15s;
+      font-size: 22px;
+    }
+    .action-btn:active { transform: scale(0.92); }
+    .action-btn .key-hint {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      letter-spacing: 0.05em;
+      line-height: 1;
+      text-align: center;
+    }
+
+    #btn-objective {
+      border-color: rgba(30,122,122,0.55);
+      color: var(--teal);
+    }
+    #btn-objective:hover { background: rgba(30,122,122,0.12); }
+
+    #btn-undo {
+      border-color: rgba(245,240,230,0.15);
+      color: rgba(245,240,230,0.35);
+      width: 44px;
+      height: 44px;
+      font-size: 16px;
+    }
+    #btn-undo:hover { border-color: rgba(245,240,230,0.35); color: rgba(245,240,230,0.6); background: rgba(245,240,230,0.05); }
+    #btn-undo:disabled { opacity: 0.2; cursor: default; }
+
+    #btn-subjective {
+      border-color: rgba(192,88,64,0.55);
+      color: var(--coral);
+    }
+    #btn-subjective:hover { background: rgba(192,88,64,0.12); }
+
+    .action-btn:disabled { opacity: 0.25; cursor: default; pointer-events: none; }
+
+    #key-legend {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: rgba(245,240,230,0.2);
+      text-align: center;
+      padding-bottom: 20px;
+      letter-spacing: 0.04em;
+      display: none;
+    }
+    #key-legend.visible { display: block; }
+
+    .email-highlight {
+      background: rgba(201,150,58,0.2);
+      color: var(--gold);
+      padding: 4px 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body tabindex="-1">
+
+  <div id="intro-screen">
+    <div class="intro-card">
+      <h1>Aspect classification</h1>
+      <p>For each aspect term, swipe <strong>left</strong> if you consider it mainly <strong>objective</strong> for typical shoppers, or <strong>right</strong> if mainly <strong>subjective</strong>.</p>
+      <div class="intro-error" id="intro-error"></div>
+      <label for="participant-handle">Your participant ID</label>
+      <input type="text" id="participant-handle" placeholder="e.g. name from researcher" autocomplete="off" autocapitalize="none">
+      <div class="intro-actions">
+        <button type="button" class="btn-primary" id="btn-start-new">Start</button>
+        <button type="button" class="btn-secondary" id="btn-resume" style="display:none">Continue previous session</button>
+      </div>
+      <p class="intro-note">Serve this folder over HTTP (<code>python -m http.server</code>) or load a local JSON file below. Pass <code>?data=path/to/file.json</code> in the URL to change the default data source.</p>
+      <label for="file-picker" style="margin-top:10px">Or load a local JSON file (no server needed)</label>
+      <input type="file" id="file-picker" accept=".json" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink2);margin-bottom:0;border:1px solid var(--border);padding:6px 8px;width:100%;cursor:pointer">
+    </div>
+  </div>
+
+  <div id="toolbar">
+    <h1>OSCAR</h1>
+    <span id="obj-count">objective: 0</span>
+    <span id="sub-count">subjective: 0</span>
+    <span id="progress-text">—</span>
+  </div>
+
+  <div id="progress-bar-wrap">
+    <div id="progress-bar-track"><div id="progress-bar-fill"></div></div>
+  </div>
+
+  <div id="stage">
+    <div id="empty">
+      <div class="oscar-logo">OSCAR</div>
+      <p id="empty-msg">Loading aspects…</p>
+    </div>
+
+    <div id="done-msg">
+      <h2 id="done-title">All done.</h2>
+      <p id="done-detail"></p>
+      <p id="done-email-line" style="display:none">Please email the downloaded file to:<br><span class="email-highlight" id="done-email"></span></p>
+      <button type="button" id="done-dl-btn" style="display:none">↓ Download responses.json</button>
+    </div>
+
+    <div id="card-wrap">
+      <div class="hint-obj" id="hint-obj">OBJECTIVE</div>
+      <div class="hint-sub" id="hint-sub">SUBJECTIVE</div>
+      <div class="expl-card" id="card"></div>
+    </div>
+
+    <div id="actions">
+      <button type="button" class="action-btn" id="btn-objective" title="Objective (← or J)">
+        <span>◀</span>
+        <span class="key-hint">OBJECTIVE<br>← J</span>
+      </button>
+      <button type="button" class="action-btn" id="btn-undo" title="Undo (Z)" disabled>
+        <span>↩</span>
+      </button>
+      <button type="button" class="action-btn" id="btn-subjective" title="Subjective (→ or L)">
+        <span>▶</span>
+        <span class="key-hint">SUBJECTIVE<br>→ L</span>
+      </button>
+    </div>
+
+    <div id="key-legend">← / J &nbsp; objective &nbsp;&nbsp;|&nbsp;&nbsp; → / L &nbsp; subjective &nbsp;&nbsp;|&nbsp;&nbsp; Z &nbsp; undo</div>
+  </div>
+
+  <script>
+  (function () {
+    'use strict';
+
+    var STORAGE_KEY = 'oscar_aspect_study_v1';
+    var _urlParams = new URLSearchParams(location.search);
+    var BUNDLED_DATA_URL = _urlParams.get('data') || '../../../oscar_eval_reports/faithfulness/Cambridge_tt_faithfulness.json';
+    var SUBMIT_EMAIL = 'nguyenthuuyen0338019545@gmail.com';
+    var SHEET_URL = 'https://script.google.com/macros/s/AKfycbwhFxofwu-YJvAtEC5EuxppV-pworN880itEItJkAUW0SDCy-zKdy36z62nf1iX8OMk/exec';
+
+    var state = null;
+    var idx = 0;
+    var nObjective = 0;
+    var nSubjective = 0;
+    var undoStack = [];
+    var actionLocked = false;
+    var itemEntryTime = 0;
+    var _cachedFilename = null;
+
+    function esc(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function uuid4() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0;
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+      });
+    }
+
+    function loadState() {
+      try {
+        var raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) { return null; }
+    }
+
+    function saveState(s) {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch (e) {}
+    }
+
+    function shuffle(arr) {
+      var a = arr.slice();
+      for (var i = a.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = a[i]; a[i] = a[j]; a[j] = t;
+      }
+      return a;
+    }
+
+    /**
+     * Faithfulness report: { dataset, model_type, top_aspects: [{ rank, name, quality }] }
+     * Curated / study array: list of explanation records with aspect objects.
+     */
+    function extractCardsFromPayload(data) {
+      var byName = {};
+      function add(card) {
+        if (!card || !card.aspect_name) return;
+        // Include dataset in key so the same term from different datasets is kept separate.
+        var key = String(card.dataset || '') + '::' + String(card.aspect_name).trim().toLowerCase();
+        if (!key || byName[key]) return;
+        byName[key] = card;
+      }
+
+      // Flat array produced by plot_aspect_scatter.py → sampled_aspects.json
+      if (Array.isArray(data) && data.length > 0 && typeof data[0].aspect_name === 'string') {
+        data.forEach(function (entry) {
+          if (!entry || !entry.aspect_name) return;
+          add({
+            aspect_name:      String(entry.aspect_name).trim(),
+            dataset:          String(entry.dataset || ''),
+            cluster:          entry.cluster != null ? entry.cluster : null,
+            cluster_label:    entry.cluster_label || null,
+            variance:         typeof entry.variance  === 'number' ? entry.variance  : null,
+            agreement:        typeof entry.agreement === 'number' ? entry.agreement : null,
+            model_is_objective: typeof entry.model_is_objective === 'boolean' ? entry.model_is_objective : null,
+            source:           'scatter_cluster',
+            rank: null, quality: null, model_type: null, ref_user_id: null, example_index: null
+          });
+        });
+        return Object.keys(byName).map(function (k) { return byName[k]; });
+      }
+
+      if (data && !Array.isArray(data) && Array.isArray(data.top_aspects)) {
+        var ds = data.dataset != null ? data.dataset : '';
+        var mt = data.model_type != null ? data.model_type : '';
+        data.top_aspects.forEach(function (row) {
+          if (!row || !row.name) return;
+          add({
+            aspect_name: String(row.name).trim(),
+            rank: row.rank != null ? row.rank : null,
+            quality: typeof row.quality === 'number' ? row.quality : null,
+            dataset: ds,
+            model_type: mt,
+            source: 'faithfulness_top_aspects'
+          });
+        });
+        return Object.keys(byName).map(function (k) { return byName[k]; });
+      }
+
+      if (Array.isArray(data)) {
+        data.forEach(function (entry, ei) {
+          if (!entry || typeof entry !== 'object') return;
+          var ds = entry.dataset != null ? entry.dataset : '';
+          var mt = entry.model_type != null ? entry.model_type : '';
+          var uid = entry.user_id != null ? String(entry.user_id) : '';
+
+          function fromAspectObj(a, role) {
+            if (!a || !a.name) return;
+            add({
+              aspect_name: String(a.name).trim(),
+              rank: null,
+              quality: typeof a.item_score === 'number' ? a.item_score : (typeof a.ref_score === 'number' ? a.ref_score : null),
+              dataset: ds,
+              model_type: mt,
+              source: 'curated_' + role,
+              model_is_objective: typeof a.is_objective === 'boolean' ? a.is_objective : null,
+              ref_user_id: uid,
+              example_index: ei
+            });
+          }
+
+          (entry.aspect_shared || []).forEach(function (a) { fromAspectObj(a, 'shared'); });
+          fromAspectObj(entry.aspect_decisive, 'decisive');
+          (entry.user_top_aspects || []).forEach(function (a) { fromAspectObj(a, 'user_top'); });
+          (entry.item_top_aspects || []).forEach(function (a) { fromAspectObj(a, 'item_top'); });
+          (entry.ref_top_aspects || []).forEach(function (a) { fromAspectObj(a, 'ref_top'); });
+        });
+        return Object.keys(byName).map(function (k) { return byName[k]; });
+      }
+
+      return [];
+    }
+
+    function showIntroError(msg) {
+      var el = document.getElementById('intro-error');
+      el.textContent = msg || '';
+      el.classList.toggle('visible', !!msg);
+    }
+
+    function setIntroVisible(show) {
+      document.getElementById('intro-screen').classList.toggle('hidden', !show);
+    }
+
+    function showMainChrome(show) {
+      document.getElementById('toolbar').classList.toggle('visible', show);
+      document.getElementById('progress-bar-wrap').classList.toggle('visible', show);
+    }
+
+    function buildCardHtml(card) {
+      var meta = '';
+      if (card.dataset) meta += '<span class="card-meta"><strong>' + esc(card.dataset) + '</strong></span>';
+      if (card.model_type) meta += '<span class="card-meta"> · model ' + esc(card.model_type) + '</span>';
+      if (card.rank != null) meta += '<span class="card-meta"> · rank ' + esc(card.rank) + '</span>';
+      if (card.quality != null) meta += '<span class="card-meta"> · quality ' + esc(card.quality.toFixed ? card.quality.toFixed(3) : card.quality) + '</span>';
+      if (card.cluster != null) meta += '<span class="card-meta"> · cluster ' + esc(card.cluster) + ' (' + esc(card.cluster_label || '') + ')</span>';
+      if (card.variance != null) meta += '<span class="card-meta"> · var ' + esc(card.variance.toFixed ? card.variance.toFixed(4) : card.variance) + '</span>';
+      if (card.agreement != null) meta += '<span class="card-meta"> · agr ' + esc(card.agreement.toFixed ? card.agreement.toFixed(3) : card.agreement) + '</span>';
+
+      return (
+        '<div class="card-header">' +
+          (meta || '<span class="card-meta">Aspect term</span>') +
+        '</div>' +
+        '<div class="card-body">' +
+          '<div class="card-prompt">Is this aspect mainly objective or subjective?</div>' +
+          '<div class="aspect-name">' + esc(card.aspect_name) + '</div>' +
+          '<div class="card-hint">Objective = measurable / factual for most shoppers. Subjective = taste, style, or opinion-heavy.</div>' +
+        '</div>'
+      );
+    }
+
+    function currentCard() {
+      if (!state || !state.rating_deck || idx >= state.rating_deck.length) return null;
+      return state.rating_deck[idx];
+    }
+
+    function updateProgress() {
+      var total = state && state.rating_deck ? state.rating_deck.length : 0;
+      var done = Math.min(idx, total);
+      document.getElementById('progress-text').textContent = done + ' / ' + total;
+      document.getElementById('progress-bar-fill').style.width = total ? (done / total * 100) + '%' : '0%';
+      document.getElementById('obj-count').textContent = 'objective: ' + nObjective;
+      document.getElementById('sub-count').textContent = 'subjective: ' + nSubjective;
+    }
+
+    function updateUndo() {
+      document.getElementById('btn-undo').disabled = undoStack.length === 0;
+    }
+
+    function setActionEnabled(enabled) {
+      actionLocked = !enabled;
+      document.getElementById('btn-objective').disabled = !enabled;
+      document.getElementById('btn-subjective').disabled = !enabled;
+    }
+
+    function showCard() {
+      if (!state || !state.rating_deck) return;
+      if (idx >= state.rating_deck.length) {
+        finishDeck();
+        return;
+      }
+      var card = state.rating_deck[idx];
+      var el = document.getElementById('card');
+      el.innerHTML = buildCardHtml(card);
+      el.className = 'expl-card';
+      el.style.transform = '';
+      itemEntryTime = Date.now();
+
+      document.getElementById('empty').style.display = 'none';
+      document.getElementById('done-msg').style.display = 'none';
+      document.getElementById('card-wrap').classList.add('visible');
+      document.getElementById('actions').classList.add('visible');
+      document.getElementById('key-legend').classList.add('visible');
+
+      updateProgress();
+      updateUndo();
+      setActionEnabled(true);
+      state.current_idx = idx;
+      state.n_objective = nObjective;
+      state.n_subjective = nSubjective;
+      state.responses = state.responses || [];
+      saveState(state);
+    }
+
+    function decide(label) {
+      if (actionLocked || !state || idx >= state.rating_deck.length) return;
+      var card = state.rating_deck[idx];
+      var timeMs = itemEntryTime ? Date.now() - itemEntryTime : null;
+
+      undoStack.push({
+        idx: idx,
+        nObjective: nObjective,
+        nSubjective: nSubjective,
+        responsesLen: (state.responses || []).length
+      });
+
+      if (label === 'objective') nObjective++;
+      else nSubjective++;
+
+      var rec = {
+        presentation_order: idx + 1,
+        label: label,
+        aspect_name: card.aspect_name,
+        rank: card.rank,
+        quality: card.quality,
+        dataset: card.dataset,
+        model_type: card.model_type,
+        source: card.source,
+        model_is_objective: card.model_is_objective,
+        ref_user_id: card.ref_user_id,
+        example_index: card.example_index,
+        time_on_item_ms: timeMs
+      };
+      if (!state.responses) state.responses = [];
+      state.responses.push(rec);
+
+      idx++;
+      updateProgress();
+      updateUndo();
+      state.current_idx = idx;
+      saveState(state);
+
+      if (idx >= state.rating_deck.length) finishDeck();
+      else showCard();
+    }
+
+    function undo() {
+      if (actionLocked || !undoStack.length || !state) return;
+      var last = undoStack.pop();
+      idx = last.idx;
+      nObjective = last.nObjective;
+      nSubjective = last.nSubjective;
+      if (state.responses && state.responses.length > last.responsesLen) {
+        state.responses = state.responses.slice(0, last.responsesLen);
+      }
+      showCard();
+      updateProgress();
+      updateUndo();
+      document.getElementById('done-msg').style.display = 'none';
+    }
+
+    function buildOutput() {
+      return {
+        study: 'aspect_classification',
+        participant_id: state.participant_id,
+        participant_handle: state.participant_handle,
+        data_source: state.data_source,
+        started_at: state.started_at,
+        submitted_at: new Date().toISOString(),
+        responses: (state.responses || []).slice().sort(function (a, b) {
+          return a.presentation_order - b.presentation_order;
+        })
+      };
+    }
+
+    function submitToSheet(output) {
+      if (!SHEET_URL) return Promise.resolve(false);
+      return fetch(SHEET_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(output)
+      }).then(function () { return true; }).catch(function (err) {
+        console.warn('submitToSheet failed:', err);
+        return false;
+      });
+    }
+
+    function downloadResponses(output) {
+      _cachedFilename = 'aspect_responses_' + state.participant_id + '.json';
+      var blob = new Blob([JSON.stringify(output, null, 2)], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = _cachedFilename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    }
+
+    function finishDeck() {
+      setActionEnabled(false);
+      document.getElementById('card-wrap').classList.remove('visible');
+      document.getElementById('actions').classList.remove('visible');
+      document.getElementById('key-legend').classList.remove('visible');
+      document.getElementById('btn-objective').disabled = true;
+      document.getElementById('btn-subjective').disabled = true;
+
+      var output = buildOutput();
+      state.phase = 'done';
+      state.submitted_at = output.submitted_at;
+      state.output = output;
+      saveState(state);
+
+      document.getElementById('done-msg').style.display = 'block';
+      document.getElementById('done-title').textContent = 'Submitting…';
+      document.getElementById('done-detail').textContent = 'Sending your responses.';
+      document.getElementById('done-email-line').style.display = 'none';
+      document.getElementById('done-dl-btn').style.display = 'none';
+
+      // Always download so the researcher has a local copy regardless.
+      downloadResponses(output);
+
+      submitToSheet(output).then(function (ok) {
+        document.getElementById('done-dl-btn').style.display = 'inline-block';
+        if (ok) {
+          document.getElementById('done-title').textContent = 'Thank you!';
+          document.getElementById('done-detail').textContent =
+            'You rated ' + state.rating_deck.length + ' aspects (' + nObjective + ' objective, ' + nSubjective + ' subjective). Responses submitted and downloaded.';
+        } else {
+          document.getElementById('done-title').textContent = 'Saved locally';
+          document.getElementById('done-detail').textContent =
+            'Could not confirm upload. Please send the downloaded JSON file to the researcher.';
+          document.getElementById('done-email-line').style.display = 'block';
+          document.getElementById('done-email').textContent = SUBMIT_EMAIL;
+        }
+      });
+    }
+
+    function showDoneFromCache() {
+      setIntroVisible(false);
+      showMainChrome(false);
+      document.getElementById('empty').style.display = 'none';
+      document.getElementById('card-wrap').classList.remove('visible');
+      document.getElementById('actions').classList.remove('visible');
+      document.getElementById('key-legend').classList.remove('visible');
+      document.getElementById('done-msg').style.display = 'block';
+      document.getElementById('done-title').textContent = 'Thank you!';
+      document.getElementById('done-detail').textContent =
+        'This session was already completed. You can close this tab.';
+      document.getElementById('done-email-line').style.display = 'none';
+      document.getElementById('done-dl-btn').style.display = 'none';
+    }
+
+    function syncCountsFromResponses() {
+      nObjective = 0;
+      nSubjective = 0;
+      if (!state || !state.responses) return;
+      for (var i = 0; i < state.responses.length; i++) {
+        if (state.responses[i].label === 'objective') nObjective++;
+        else if (state.responses[i].label === 'subjective') nSubjective++;
+      }
+    }
+
+    function resumeSession() {
+      state = loadState();
+      if (!state || state.phase !== 'rating' || !state.rating_deck) return false;
+      idx = state.current_idx || 0;
+      syncCountsFromResponses();
+      undoStack = [];
+      setIntroVisible(false);
+      showMainChrome(true);
+      document.getElementById('empty').style.display = 'none';
+      if (idx >= state.rating_deck.length) {
+        finishDeck();
+        return true;
+      }
+      showCard();
+      return true;
+    }
+
+    function initSessionFromData(data, dataSource, handle) {
+      var cards = extractCardsFromPayload(data);
+      if (cards.length < 5) {
+        showIntroError('Too few aspects loaded (' + cards.length + '). Need at least 5.');
+        document.getElementById('empty-msg').textContent = 'Could not load data.';
+        return;
+      }
+      var order = shuffle(cards.map(function (_, i) { return i; }));
+      var deck = order.map(function (i) { return cards[i]; });
+      state = {
+        study: 'aspect_classification',
+        phase: 'rating',
+        participant_id: uuid4(),
+        participant_handle: handle,
+        data_source: dataSource,
+        started_at: new Date().toISOString(),
+        rating_deck: deck,
+        current_idx: 0,
+        responses: [],
+        n_objective: 0,
+        n_subjective: 0
+      };
+      saveState(state);
+      idx = 0; nObjective = 0; nSubjective = 0; undoStack = [];
+      setIntroVisible(false);
+      showMainChrome(true);
+      document.getElementById('empty').style.display = 'none';
+      showCard();
+    }
+
+    function startNewSession(handle) {
+      showIntroError('');
+      document.getElementById('empty-msg').textContent = 'Loading aspects…';
+      document.getElementById('empty').style.display = 'block';
+
+      fetch(BUNDLED_DATA_URL)
+        .then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status + ' — open via local server from repo root');
+          return r.json();
+        })
+        .then(function (data) { initSessionFromData(data, BUNDLED_DATA_URL, handle); })
+        .catch(function (err) {
+          showIntroError(String(err.message || err));
+          document.getElementById('empty-msg').textContent = 'Could not load data.';
+        });
+    }
+
+    function clearStorage() {
+      try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    }
+
+    function initIntroUi() {
+      var saved = loadState();
+      var resumeBtn = document.getElementById('btn-resume');
+      if (saved && saved.phase === 'rating' && saved.rating_deck &&
+          saved.current_idx < saved.rating_deck.length) {
+        resumeBtn.style.display = 'block';
+        if (saved.participant_handle) {
+          document.getElementById('participant-handle').value = saved.participant_handle;
+        }
+      } else {
+        resumeBtn.style.display = 'none';
+      }
+    }
+
+    document.getElementById('btn-start-new').addEventListener('click', function () {
+      var h = document.getElementById('participant-handle').value.trim();
+      if (!h) {
+        showIntroError('Please enter your participant ID.');
+        return;
+      }
+      clearStorage();
+      startNewSession(h.toLowerCase());
+    });
+
+    document.getElementById('btn-resume').addEventListener('click', function () {
+      if (resumeSession()) return;
+      showIntroError('No session to resume.');
+    });
+
+    document.getElementById('file-picker').addEventListener('change', function (e) {
+      var file = e.target.files[0];
+      if (!file) return;
+      var h = document.getElementById('participant-handle').value.trim();
+      if (!h) { showIntroError('Please enter your participant ID before loading a file.'); return; }
+      showIntroError('');
+      document.getElementById('empty-msg').textContent = 'Loading aspects…';
+      document.getElementById('empty').style.display = 'block';
+      clearStorage();
+      var reader = new FileReader();
+      reader.onload = function (evt) {
+        try {
+          var data = JSON.parse(evt.target.result);
+          initSessionFromData(data, file.name, h.toLowerCase());
+        } catch (err) {
+          showIntroError('Invalid JSON: ' + String(err.message || err));
+          document.getElementById('empty-msg').textContent = 'Could not load data.';
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    document.getElementById('btn-objective').addEventListener('click', function () { decide('objective'); });
+    document.getElementById('btn-subjective').addEventListener('click', function () { decide('subjective'); });
+    document.getElementById('btn-undo').addEventListener('click', undo);
+    document.getElementById('done-dl-btn').addEventListener('click', function () {
+      var s = loadState();
+      if (s && s.output) downloadResponses(s.output);
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (!document.getElementById('intro-screen').classList.contains('hidden')) return;
+      if (!document.getElementById('card-wrap').classList.contains('visible')) return;
+
+      if (e.key === 'ArrowRight' || e.key === 'l' || e.key === 'L') {
+        e.preventDefault();
+        decide('subjective');
+      }
+      if (e.key === 'ArrowLeft' || e.key === 'j' || e.key === 'J') {
+        e.preventDefault();
+        decide('objective');
+      }
+      if (e.key === 'z' || e.key === 'Z') { e.preventDefault(); undo(); }
+    });
+
+    (function dragSwipe() {
+      var startX = 0, startY = 0, dragging = false, currentX = 0;
+      var THRESHOLD = 80;
+
+      function getCard() { return document.getElementById('card'); }
+
+      function onStart(x, y) {
+        if (!state || idx >= (state.rating_deck || []).length) return;
+        var card = getCard();
+        if (!card) return;
+        startX = x; startY = y; currentX = 0; dragging = true;
+        card.classList.add('grabbing');
+      }
+
+      function onMove(x) {
+        if (!dragging) return;
+        var card = getCard();
+        if (!card) return;
+        currentX = x - startX;
+        var tilt = currentX * 0.08;
+        card.style.transform = 'translateX(' + currentX + 'px) rotate(' + tilt + 'deg)';
+
+        var ho = document.getElementById('hint-obj');
+        var hs = document.getElementById('hint-sub');
+        var ratio = Math.min(Math.abs(currentX) / THRESHOLD, 1);
+        if (currentX < -10) { ho.style.opacity = ratio * 0.9; hs.style.opacity = '0'; }
+        else if (currentX > 10) { hs.style.opacity = ratio * 0.9; ho.style.opacity = '0'; }
+        else { ho.style.opacity = '0'; hs.style.opacity = '0'; }
+      }
+
+      function onEnd() {
+        if (!dragging) return;
+        dragging = false;
+        var card = getCard();
+        if (card) card.classList.remove('grabbing');
+        document.getElementById('hint-obj').style.opacity = '0';
+        document.getElementById('hint-sub').style.opacity = '0';
+
+        if (currentX < -THRESHOLD) decide('objective');
+        else if (currentX > THRESHOLD) decide('subjective');
+        else if (card) card.style.transform = '';
+      }
+
+      document.addEventListener('mousedown', function (e) {
+        var card = getCard();
+        if (card && card.contains(e.target)) onStart(e.clientX, e.clientY);
+      });
+      document.addEventListener('mousemove', function (e) { onMove(e.clientX); });
+      document.addEventListener('mouseup', onEnd);
+
+      document.addEventListener('touchstart', function (e) {
+        var card = getCard();
+        if (card && card.contains(e.target)) onStart(e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: true });
+      document.addEventListener('touchmove', function (e) {
+        if (dragging) onMove(e.touches[0].clientX);
+      }, { passive: true });
+      document.addEventListener('touchend', onEnd);
+      document.addEventListener('touchcancel', function () {
+        if (!dragging) return;
+        dragging = false;
+        var card = getCard();
+        if (card) { card.classList.remove('grabbing'); card.style.transform = ''; }
+        document.getElementById('hint-obj').style.opacity = '0';
+        document.getElementById('hint-sub').style.opacity = '0';
+      });
+    })();
+
+    // Boot
+    (function boot() {
+      var saved = loadState();
+      if (saved && saved.phase === 'done' && saved.output) {
+        showDoneFromCache();
+        return;
+      }
+      initIntroUi();
+      setIntroVisible(true);
+      document.getElementById('empty').style.display = 'block';
+      document.getElementById('empty-msg').textContent = 'Enter your ID and press Start (or continue a saved session).';
+    })();
+  })();
+  </script>
+</body>
+</html>
