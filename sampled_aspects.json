@@ -427,5 +427,18 @@
     "n_users": 45,
     "study_explanation": "Blocking outside noise for calls or music.",
     "study_question": "Will people often disagree on how good noise cancellation is?"
+  },
+  {
+    "aspect_name": "asterisk_line",
+    "dataset": "general",
+    "cluster": 0,
+    "cluster_label": "attention_check",
+    "variance": 0.0,
+    "agreement": 0.0,
+    "model_is_objective": true,
+    "n_items": 0,
+    "n_users": 0,
+    "study_explanation": "Attention check: this line is not a real review aspect. To show you are reading carefully, swipe the card left (Objective), not right—do not choose Subjective for this item.",
+    "study_question": "Ignore the usual objective-vs-subjective wording for this card only; follow the explanation above."
   }
 ]
