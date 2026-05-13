@@ -330,6 +330,28 @@
       color: var(--ink2);
       line-height: 1.5;
     }
+    .card-detail {
+      margin-top: 16px;
+      text-align: left;
+      background: rgba(26,18,8,0.04);
+      border: 1px solid var(--border);
+      padding: 12px 14px;
+      border-radius: 2px;
+    }
+    .card-detail + .card-detail { margin-top: 10px; }
+    .card-detail-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink2);
+      margin-bottom: 6px;
+    }
+    .card-detail-text {
+      font-size: 0.94rem;
+      color: var(--ink);
+      line-height: 1.5;
+    }
 
     #actions {
       display: none;
@@ -551,6 +573,8 @@
             variance:         typeof entry.variance  === 'number' ? entry.variance  : null,
             agreement:        typeof entry.agreement === 'number' ? entry.agreement : null,
             model_is_objective: typeof entry.model_is_objective === 'boolean' ? entry.model_is_objective : null,
+            study_explanation: typeof entry.study_explanation === 'string' ? entry.study_explanation : null,
+            study_question:   typeof entry.study_question === 'string' ? entry.study_question : null,
             source:           'scatter_cluster',
             rank: null, quality: null, model_type: null, ref_user_id: null, example_index: null
           });
@@ -634,6 +658,13 @@
       if (card.variance != null) meta += '<span class="card-meta"> · var ' + esc(card.variance.toFixed ? card.variance.toFixed(4) : card.variance) + '</span>';
       if (card.agreement != null) meta += '<span class="card-meta"> · agr ' + esc(card.agreement.toFixed ? card.agreement.toFixed(3) : card.agreement) + '</span>';
 
+      var explanationHtml = card.study_explanation
+        ? ('<div class="card-detail"><div class="card-detail-label">Explanation</div><div class="card-detail-text">' + esc(card.study_explanation) + '</div></div>')
+        : '';
+      var questionHtml = card.study_question
+        ? ('<div class="card-detail"><div class="card-detail-label">Question</div><div class="card-detail-text">' + esc(card.study_question) + '</div></div>')
+        : '';
+
       return (
         '<div class="card-header">' +
           (meta || '<span class="card-meta">Aspect term</span>') +
@@ -641,6 +672,8 @@
         '<div class="card-body">' +
           '<div class="card-prompt">Is this aspect mainly objective or subjective?</div>' +
           '<div class="aspect-name">' + esc(card.aspect_name) + '</div>' +
+          explanationHtml +
+          questionHtml +
           '<div class="card-hint">Objective = measurable / factual for most shoppers. Subjective = taste, style, or opinion-heavy.</div>' +
         '</div>'
       );

@@ -8,7 +8,9 @@
     "agreement": -0.10612760208518468,
     "model_is_objective": true,
     "n_items": 197,
-    "n_users": 311
+    "n_users": 311,
+    "study_explanation": "How easy the gear folds and how small it gets when folded.",
+    "study_question": "If many people review the same product, will most agree about folding, or will some say it folds well and others say it folds badly?"
   },
   {
     "aspect_name": "carrier",
@@ -19,18 +21,9 @@
     "agreement": -0.10958699291004795,
     "model_is_objective": false,
     "n_items": 122,
-    "n_users": 330
-  },
-  {
-    "aspect_name": "definitely",
-    "dataset": "baby",
-    "cluster": 1,
-    "cluster_label": "high_agr_low_var",
-    "variance": 0.1674309941696108,
-    "agreement": -0.10044865893824897,
-    "model_is_objective": false,
-    "n_items": 321,
-    "n_users": 358
+    "n_users": 330,
+    "study_explanation": "How the baby carrier feels to wear: straps, weight on your body, comfort.",
+    "study_question": "Will reviewers often disagree (some love it, some hate it), or will most agree?"
   },
   {
     "aspect_name": "freezer",
@@ -41,150 +34,139 @@
     "agreement": -0.09491211868181006,
     "model_is_objective": false,
     "n_items": 35,
-    "n_users": 55
+    "n_users": 55,
+    "study_explanation": "Cold storage for bottles or milk: how well the freezer or cooler part works.",
+    "study_question": "Will most buyers agree it keeps things cold enough, or will opinions spread all over?"
   },
   {
-    "aspect_name": "toy",
+    "aspect_name": "size",
     "dataset": "baby",
     "cluster": 1,
     "cluster_label": "high_agr_low_var",
-    "variance": 0.1409032133624978,
-    "agreement": -0.13044790128675782,
-    "model_is_objective": false,
-    "n_items": 566,
-    "n_users": 1546
+    "variance": 0.14328092254357405,
+    "agreement": -0.08189274169805498,
+    "model_is_objective": true,
+    "n_items": 1949,
+    "n_users": 4147,
+    "study_explanation": "The product's physical size and weight (as listed or measured).",
+    "study_question": "If many people judge the same product, will they mostly agree on how big and bulky it is, or will they strongly disagree about its physical size?"
   },
   {
-    "aspect_name": "cloths",
+    "aspect_name": "bath",
+    "dataset": "baby",
+    "cluster": 1,
+    "cluster_label": "high_agr_low_var",
+    "variance": 0.16812266501638284,
+    "agreement": -0.07795505677099358,
+    "model_is_objective": false,
+    "n_items": 110,
+    "n_users": 158,
+    "study_explanation": "The bath product or tub: safe feel, easy to use, baby fits well.",
+    "study_question": "Will parents often disagree on whether the bath product is good, or will most agree?"
+  },
+  {
+    "aspect_name": "canopy",
+    "dataset": "baby",
+    "cluster": 1,
+    "cluster_label": "high_agr_low_var",
+    "variance": 0.17756205173212655,
+    "agreement": -0.12933577367911614,
+    "model_is_objective": false,
+    "n_items": 71,
+    "n_users": 121,
+    "study_explanation": "The sun shade on a stroller or seat: cover from sun, easy to move.",
+    "study_question": "Will people often disagree on the canopy, or will most share one view?"
+  },
+  {
+    "aspect_name": "blanket",
+    "dataset": "baby",
+    "cluster": 1,
+    "cluster_label": "high_agr_low_var",
+    "variance": 0.12603219963923729,
+    "agreement": -0.08627731707469576,
+    "model_is_objective": true,
+    "n_items": 202,
+    "n_users": 374,
+    "study_explanation": "The blanket's material and warmth quality for the same product model.",
+    "study_question": "If many buyers judge the same blanket model, will they mostly agree on warmth and material quality, or strongly disagree?"
+  },
+  {
+    "aspect_name": "potty",
     "dataset": "baby",
     "cluster": 2,
     "cluster_label": "low_agr_high_var",
-    "variance": 0.5796418676639113,
-    "agreement": -0.2847363560454302,
-    "model_is_objective": false,
-    "n_items": 14,
-    "n_users": 17
-  },
-  {
-    "aspect_name": "strollers",
-    "dataset": "baby",
-    "cluster": 2,
-    "cluster_label": "low_agr_high_var",
-    "variance": 0.5526301266985294,
-    "agreement": -0.28220455444999026,
+    "variance": 0.5949791945980405,
+    "agreement": -0.24357657927328485,
     "model_is_objective": false,
     "n_items": 40,
-    "n_users": 49
+    "n_users": 81,
+    "study_explanation": "The potty seat or trainer: child sits well, easy to clean, works for training.",
+    "study_question": "Will parents often split (great vs does not work), or will reviews point the same way?"
   },
   {
-    "aspect_name": "cup_holder",
-    "dataset": "baby",
-    "cluster": 2,
-    "cluster_label": "low_agr_high_var",
-    "variance": 0.5935977575656955,
-    "agreement": -0.30253237829826957,
-    "model_is_objective": false,
-    "n_items": 53,
-    "n_users": 72
-  },
-  {
-    "aspect_name": "breast",
-    "dataset": "baby",
-    "cluster": 2,
-    "cluster_label": "low_agr_high_var",
-    "variance": 0.5346070358403994,
-    "agreement": -0.2847363560454302,
-    "model_is_objective": false,
-    "n_items": 21,
-    "n_users": 24
-  },
-  {
-    "aspect_name": "basket",
-    "dataset": "baby",
-    "cluster": 2,
-    "cluster_label": "low_agr_high_var",
-    "variance": 0.5276580144418375,
-    "agreement": -0.2645314072491736,
-    "model_is_objective": false,
-    "n_items": 100,
-    "n_users": 138
-  },
-  {
-    "aspect_name": "location",
+    "aspect_name": "ingredients",
     "dataset": "Cambridge",
     "cluster": 1,
     "cluster_label": "high_agr_low_var",
-    "variance": 0.1553020521524353,
-    "agreement": -0.11970962001429108,
-    "model_is_objective": false,
-    "n_items": 490,
-    "n_users": 943
-  },
-  {
-    "aspect_name": "lunch",
-    "dataset": "Cambridge",
-    "cluster": 1,
-    "cluster_label": "high_agr_low_var",
-    "variance": 0.15270258764974276,
-    "agreement": -0.12364854765680429,
-    "model_is_objective": false,
-    "n_items": 303,
-    "n_users": 626
-  },
-  {
-    "aspect_name": "wines",
-    "dataset": "Cambridge",
-    "cluster": 1,
-    "cluster_label": "high_agr_low_var",
-    "variance": 0.1338260873413522,
-    "agreement": -0.12202986687661292,
+    "variance": 0.15423051312513741,
+    "agreement": -0.08251462933124389,
     "model_is_objective": true,
-    "n_items": 30,
-    "n_users": 39
+    "n_items": 268,
+    "n_users": 623,
+    "study_explanation": "The food's ingredients: freshness and ingredient quality.",
+    "study_question": "If many diners review the same restaurant, will they mostly agree the ingredients are good, or will opinions clash?"
   },
   {
-    "aspect_name": "bean",
+    "aspect_name": "staff",
     "dataset": "Cambridge",
     "cluster": 1,
     "cluster_label": "high_agr_low_var",
-    "variance": 0.13298191147544952,
-    "agreement": -0.12320854876874268,
-    "model_is_objective": true,
-    "n_items": 60,
-    "n_users": 138
+    "variance": 0.13751457573995582,
+    "agreement": -0.13218954776372513,
+    "model_is_objective": false,
+    "n_items": 963,
+    "n_users": 3382,
+    "study_explanation": "The workers: friendly or rude, fast or slow, helpful or not.",
+    "study_question": "Will reviews often disagree about the staff, or will most people say the same thing?"
   },
   {
-    "aspect_name": "visit",
+    "aspect_name": "pastries",
     "dataset": "Cambridge",
     "cluster": 1,
     "cluster_label": "high_agr_low_var",
-    "variance": 0.17238246795269455,
-    "agreement": -0.11637283241087104,
+    "variance": 0.17217833121685908,
+    "agreement": -0.08755642948396977,
     "model_is_objective": false,
-    "n_items": 249,
-    "n_users": 367
+    "n_items": 42,
+    "n_users": 78,
+    "study_explanation": "Pastries at the place: taste and freshness.",
+    "study_question": "Will diners often split between love it and so-so, or will ratings bunch together?"
   },
   {
-    "aspect_name": "chips",
+    "aspect_name": "bacon",
     "dataset": "Cambridge",
-    "cluster": 2,
-    "cluster_label": "low_agr_high_var",
-    "variance": 0.49050256986258756,
-    "agreement": -0.2938183574912858,
+    "cluster": 1,
+    "cluster_label": "high_agr_low_var",
+    "variance": 0.17480542500825932,
+    "agreement": -0.08542090681362904,
     "model_is_objective": false,
-    "n_items": 43,
-    "n_users": 112
+    "n_items": 41,
+    "n_users": 53,
+    "study_explanation": "The bacon: crispy or not, flavor, how it is cooked.",
+    "study_question": "Will people often disagree on whether the bacon is good here?"
   },
   {
-    "aspect_name": "cocoa",
+    "aspect_name": "size",
     "dataset": "Cambridge",
-    "cluster": 2,
-    "cluster_label": "low_agr_high_var",
-    "variance": 0.4774438973356012,
-    "agreement": -0.2724304852725031,
+    "cluster": 1,
+    "cluster_label": "high_agr_low_var",
+    "variance": 0.171715240319608,
+    "agreement": -0.07804923763837876,
     "model_is_objective": false,
-    "n_items": 21,
-    "n_users": 35
+    "n_items": 205,
+    "n_users": 326,
+    "study_explanation": "How big the place or the plate feels: small room vs big room, small meal vs big meal.",
+    "study_question": "Will reviewers often give different views on size (too small vs plenty), or mostly agree?"
   },
   {
     "aspect_name": "oysters",
@@ -195,7 +177,9 @@
     "agreement": -0.33161739140707064,
     "model_is_objective": false,
     "n_items": 36,
-    "n_users": 112
+    "n_users": 112,
+    "study_explanation": "The oysters: fresh, tasty, well prepared.",
+    "study_question": "Will oyster reviews often fight each other (great vs bad), or line up?"
   },
   {
     "aspect_name": "pasta",
@@ -206,51 +190,48 @@
     "agreement": -0.25713973415722924,
     "model_is_objective": false,
     "n_items": 46,
-    "n_users": 74
+    "n_users": 74,
+    "study_explanation": "The pasta dishes: sauce, taste, texture.",
+    "study_question": "Will people often disagree on the pasta at this place?"
   },
   {
-    "aspect_name": "rice",
+    "aspect_name": "potatoes",
     "dataset": "Cambridge",
     "cluster": 2,
     "cluster_label": "low_agr_high_var",
-    "variance": 0.530351512588926,
-    "agreement": -0.3098208765043378,
+    "variance": 0.47339822050257874,
+    "agreement": -0.24562681443762072,
     "model_is_objective": false,
-    "n_items": 123,
-    "n_users": 190
+    "n_items": 76,
+    "n_users": 148,
+    "study_explanation": "Potato sides: cooked well, taste good.",
+    "study_question": "Will diners often disagree on the potatoes?"
   },
   {
-    "aspect_name": "cheddar",
-    "dataset": "Philadelphia",
-    "cluster": 1,
-    "cluster_label": "high_agr_low_var",
-    "variance": 0.16307033027213347,
-    "agreement": -0.10524153175795142,
+    "aspect_name": "interior",
+    "dataset": "Cambridge",
+    "cluster": 2,
+    "cluster_label": "low_agr_high_var",
+    "variance": 0.4317644724481786,
+    "agreement": -0.2847363560454302,
     "model_is_objective": false,
-    "n_items": 92,
-    "n_users": 140
+    "n_items": 71,
+    "n_users": 84,
+    "study_explanation": "Inside the restaurant: looks, seats, clean or not, mood.",
+    "study_question": "Will people often disagree on the interior, or agree?"
   },
   {
-    "aspect_name": "beans",
-    "dataset": "Philadelphia",
-    "cluster": 1,
-    "cluster_label": "high_agr_low_var",
-    "variance": 0.15737780473477475,
-    "agreement": -0.1088044076047474,
+    "aspect_name": "portions",
+    "dataset": "Cambridge",
+    "cluster": 2,
+    "cluster_label": "low_agr_high_var",
+    "variance": 0.5425175938160688,
+    "agreement": -0.29698121035454883,
     "model_is_objective": false,
-    "n_items": 577,
-    "n_users": 1340
-  },
-  {
-    "aspect_name": "cool",
-    "dataset": "Philadelphia",
-    "cluster": 1,
-    "cluster_label": "high_agr_low_var",
-    "variance": 0.1669298543686346,
-    "agreement": -0.10481119001789545,
-    "model_is_objective": false,
-    "n_items": 480,
-    "n_users": 553
+    "n_items": 302,
+    "n_users": 754,
+    "study_explanation": "How much food you get on the plate for what you pay.",
+    "study_question": "Will reviewers often disagree (too small vs huge), or mostly agree?"
   },
   {
     "aspect_name": "deals",
@@ -261,40 +242,22 @@
     "agreement": -0.09857294482313443,
     "model_is_objective": false,
     "n_items": 350,
-    "n_users": 475
+    "n_users": 475,
+    "study_explanation": "Sales and specials: good price and value or not.",
+    "study_question": "Will customers often disagree on whether the deals are worth it?"
   },
   {
-    "aspect_name": "wine_list",
+    "aspect_name": "cheesesteaks",
     "dataset": "Philadelphia",
     "cluster": 1,
     "cluster_label": "high_agr_low_var",
-    "variance": 0.15409531301919144,
-    "agreement": -0.10385222792538701,
+    "variance": 0.16774650938189675,
+    "agreement": -0.09986919787946251,
     "model_is_objective": false,
-    "n_items": 152,
-    "n_users": 276
-  },
-  {
-    "aspect_name": "eggs",
-    "dataset": "Philadelphia",
-    "cluster": 2,
-    "cluster_label": "low_agr_high_var",
-    "variance": 0.5165756597153872,
-    "agreement": -0.2899785024597625,
-    "model_is_objective": false,
-    "n_items": 424,
-    "n_users": 908
-  },
-  {
-    "aspect_name": "poutine",
-    "dataset": "Philadelphia",
-    "cluster": 2,
-    "cluster_label": "low_agr_high_var",
-    "variance": 0.5224088515874834,
-    "agreement": -0.2847363560454302,
-    "model_is_objective": false,
-    "n_items": 11,
-    "n_users": 16
+    "n_items": 197,
+    "n_users": 716,
+    "study_explanation": "The cheesesteak sandwich: meat, bread, cheese, taste.",
+    "study_question": "Will cheesesteak reviews often fight (amazing vs overrated), or cluster?"
   },
   {
     "aspect_name": "furniture",
@@ -305,7 +268,9 @@
     "agreement": -0.28603703151539706,
     "model_is_objective": false,
     "n_items": 160,
-    "n_users": 209
+    "n_users": 209,
+    "study_explanation": "Chairs and tables in the place: comfortable, nice to sit on, look good or not.",
+    "study_question": "Will people often disagree on the furniture?"
   },
   {
     "aspect_name": "relaxing",
@@ -316,7 +281,9 @@
     "agreement": -0.2959024876550549,
     "model_is_objective": false,
     "n_items": 158,
-    "n_users": 180
+    "n_users": 180,
+    "study_explanation": "Whether the place feels calm and easy to be in (noise, pace, mood).",
+    "study_question": "Will visitors often disagree on how relaxing it is?"
   },
   {
     "aspect_name": "sweets",
@@ -327,18 +294,35 @@
     "agreement": -0.2847363560454302,
     "model_is_objective": false,
     "n_items": 33,
-    "n_users": 36
+    "n_users": 36,
+    "study_explanation": "Desserts and sweet food: taste and quality.",
+    "study_question": "Will diners often disagree on the sweets?"
   },
   {
-    "aspect_name": "buy",
-    "dataset": "cellphone",
-    "cluster": 1,
-    "cluster_label": "high_agr_low_var",
-    "variance": 0.1785991313929969,
-    "agreement": -0.09944343601364274,
+    "aspect_name": "color",
+    "dataset": "Philadelphia",
+    "cluster": 2,
+    "cluster_label": "low_agr_high_var",
+    "variance": 0.5142073673904113,
+    "agreement": -0.2637887589899957,
     "model_is_objective": false,
-    "n_items": 1047,
-    "n_users": 1287
+    "n_items": 327,
+    "n_users": 450,
+    "study_explanation": "The colors you see: walls, lights, how the place looks.",
+    "study_question": "Will people often disagree on the colors and look?"
+  },
+  {
+    "aspect_name": "exterior",
+    "dataset": "Philadelphia",
+    "cluster": 2,
+    "cluster_label": "low_agr_high_var",
+    "variance": 0.47773081131849027,
+    "agreement": -0.2847363560454302,
+    "model_is_objective": false,
+    "n_items": 66,
+    "n_users": 69,
+    "study_explanation": "The outside of the building: looks good from the street, sign, entrance.",
+    "study_question": "Will reviewers often disagree on how the outside looks?"
   },
   {
     "aspect_name": "phone_case",
@@ -349,7 +333,9 @@
     "agreement": -0.07118408901135755,
     "model_is_objective": true,
     "n_items": 193,
-    "n_users": 210
+    "n_users": 210,
+    "study_explanation": "How well the phone case physically fits and protects the phone model.",
+    "study_question": "If many buyers use the same case on the same phone model, will they mostly agree on fit and protection, or strongly disagree?"
   },
   {
     "aspect_name": "touch",
@@ -360,7 +346,9 @@
     "agreement": -0.10449002343710115,
     "model_is_objective": false,
     "n_items": 551,
-    "n_users": 666
+    "n_users": 666,
+    "study_explanation": "How the screen responds when you tap and swipe.",
+    "study_question": "Will users often disagree on how good touch feels?"
   },
   {
     "aspect_name": "color",
@@ -371,7 +359,9 @@
     "agreement": -0.11001252003565334,
     "model_is_objective": false,
     "n_items": 1142,
-    "n_users": 1815
+    "n_users": 1815,
+    "study_explanation": "The phone's color and look you buy in the store.",
+    "study_question": "Will people often disagree on liking the color (pure taste)?"
   },
   {
     "aspect_name": "cord",
@@ -382,61 +372,86 @@
     "agreement": -0.10574808069265283,
     "model_is_objective": false,
     "n_items": 243,
-    "n_users": 372
+    "n_users": 372,
+    "study_explanation": "The charging cable: length, breaks or not, plugs in well.",
+    "study_question": "Will most users agree the cord is fine, or will ratings spread?"
   },
   {
-    "aspect_name": "clip",
+    "aspect_name": "stylus",
+    "dataset": "cellphone",
+    "cluster": 1,
+    "cluster_label": "high_agr_low_var",
+    "variance": 0.18456207893206888,
+    "agreement": -0.13121428099929314,
+    "model_is_objective": false,
+    "n_items": 161,
+    "n_users": 476,
+    "study_explanation": "The pen for the screen: smooth, delay, feels good to hold.",
+    "study_question": "Will reviews often disagree on the stylus?"
+  },
+  {
+    "aspect_name": "matte",
+    "dataset": "cellphone",
+    "cluster": 1,
+    "cluster_label": "high_agr_low_var",
+    "variance": 0.23138227978646916,
+    "agreement": -0.07481118356501659,
+    "model_is_objective": false,
+    "n_items": 142,
+    "n_users": 189,
+    "study_explanation": "The matte finish: look, feel, fingerprints show or not.",
+    "study_question": "Will people often disagree on the matte finish?"
+  },
+  {
+    "aspect_name": "battery_pack",
+    "dataset": "cellphone",
+    "cluster": 1,
+    "cluster_label": "high_agr_low_var",
+    "variance": 0.23258656490265875,
+    "agreement": -0.11103914752277036,
+    "model_is_objective": false,
+    "n_items": 71,
+    "n_users": 104,
+    "study_explanation": "Extra battery or power pack: lasts long enough, charges fast, too heavy or not.",
+    "study_question": "Will most users agree on how good the battery pack is, or split?"
+  },
+  {
+    "aspect_name": "glass",
     "dataset": "cellphone",
     "cluster": 2,
     "cluster_label": "low_agr_high_var",
-    "variance": 0.573682746151206,
-    "agreement": -0.3227012035181542,
+    "variance": 0.5280959520938519,
+    "agreement": -0.2926456992689143,
     "model_is_objective": false,
-    "n_items": 116,
-    "n_users": 137
+    "n_items": 130,
+    "n_users": 149,
+    "study_explanation": "The screen glass: clear, scratches easy or not.",
+    "study_question": "Will reviewers often disagree on the glass quality?"
   },
   {
-    "aspect_name": "purchased",
+    "aspect_name": "fit",
     "dataset": "cellphone",
     "cluster": 2,
     "cluster_label": "low_agr_high_var",
-    "variance": 0.5592362113945896,
-    "agreement": -0.35030064855589105,
+    "variance": 0.5058024204681356,
+    "agreement": -0.3236641513322824,
     "model_is_objective": false,
-    "n_items": 384,
-    "n_users": 434
+    "n_items": 2110,
+    "n_users": 3431,
+    "study_explanation": "How well a case or earbuds fit the phone or your ears.",
+    "study_question": "Will users often disagree on fit (fits me vs does not)?"
   },
   {
-    "aspect_name": "bubbles",
+    "aspect_name": "noise_cancellation",
     "dataset": "cellphone",
     "cluster": 2,
     "cluster_label": "low_agr_high_var",
-    "variance": 0.5398383298917598,
-    "agreement": -0.29786581569878284,
+    "variance": 0.49993419234899517,
+    "agreement": -0.3427500187380632,
     "model_is_objective": false,
-    "n_items": 150,
-    "n_users": 197
-  },
-  {
-    "aspect_name": "scratches",
-    "dataset": "cellphone",
-    "cluster": 2,
-    "cluster_label": "low_agr_high_var",
-    "variance": 0.5161225527027641,
-    "agreement": -0.33079780763136457,
-    "model_is_objective": false,
-    "n_items": 198,
-    "n_users": 236
-  },
-  {
-    "aspect_name": "cases",
-    "dataset": "cellphone",
-    "cluster": 2,
-    "cluster_label": "low_agr_high_var",
-    "variance": 0.5137867316379262,
-    "agreement": -0.33054961723691906,
-    "model_is_objective": false,
-    "n_items": 1044,
-    "n_users": 1648
+    "n_items": 37,
+    "n_users": 45,
+    "study_explanation": "Blocking outside noise for calls or music.",
+    "study_question": "Will people often disagree on how good noise cancellation is?"
   }
 ]
