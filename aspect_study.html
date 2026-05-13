@@ -650,9 +650,6 @@
       if (card.model_type) meta += '<span class="card-meta"> · model ' + esc(card.model_type) + '</span>';
       if (card.rank != null) meta += '<span class="card-meta"> · rank ' + esc(card.rank) + '</span>';
       if (card.quality != null) meta += '<span class="card-meta"> · quality ' + esc(card.quality.toFixed ? card.quality.toFixed(3) : card.quality) + '</span>';
-      if (card.cluster != null) meta += '<span class="card-meta"> · cluster ' + esc(card.cluster) + ' (' + esc(card.cluster_label || '') + ')</span>';
-      if (card.variance != null) meta += '<span class="card-meta"> · var ' + esc(card.variance.toFixed ? card.variance.toFixed(4) : card.variance) + '</span>';
-      if (card.agreement != null) meta += '<span class="card-meta"> · agr ' + esc(card.agreement.toFixed ? card.agreement.toFixed(3) : card.agreement) + '</span>';
 
       var explanationHtml = card.study_explanation
         ? ('<div class="card-detail"><div class="card-detail-label">Explanation</div><div class="card-detail-text">' + esc(card.study_explanation) + '</div></div>')
