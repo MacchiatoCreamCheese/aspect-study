@@ -156,19 +156,6 @@
     "study_question": "Will people often disagree on whether the bacon is good here?"
   },
   {
-    "aspect_name": "size",
-    "dataset": "Cambridge",
-    "cluster": 1,
-    "cluster_label": "high_agr_low_var",
-    "variance": 0.171715240319608,
-    "agreement": -0.07804923763837876,
-    "model_is_objective": false,
-    "n_items": 205,
-    "n_users": 326,
-    "study_explanation": "How big the place or the plate feels: small room vs big room, small meal vs big meal.",
-    "study_question": "Will reviewers often give different views on size (too small vs plenty), or mostly agree?"
-  },
-  {
     "aspect_name": "oysters",
     "dataset": "Cambridge",
     "cluster": 2,
@@ -349,19 +336,6 @@
     "n_users": 666,
     "study_explanation": "How the screen responds when you tap and swipe.",
     "study_question": "Will users often disagree on how good touch feels?"
-  },
-  {
-    "aspect_name": "color",
-    "dataset": "cellphone",
-    "cluster": 1,
-    "cluster_label": "high_agr_low_var",
-    "variance": 0.19946743365543154,
-    "agreement": -0.11001252003565334,
-    "model_is_objective": false,
-    "n_items": 1142,
-    "n_users": 1815,
-    "study_explanation": "The phone's color and look you buy in the store.",
-    "study_question": "Will people often disagree on liking the color (pure taste)?"
   },
   {
     "aspect_name": "cord",
