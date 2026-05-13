@@ -435,17 +435,13 @@
   <div id="intro-screen">
     <div class="intro-card">
       <h1>Aspect classification</h1>
-      <p>For each aspect term, swipe <strong>left</strong> if you consider it mainly <strong>objective</strong> for typical shoppers, or <strong>right</strong> if mainly <strong>subjective</strong>.</p>
+      <p>You'll see a series of product or restaurant aspects. For each one, decide: is it mainly <strong>objective</strong> (measurable, factual) or <strong>subjective</strong> (opinion-based, varies by taste)?</p>
+      <p>Use the arrow keys or buttons to respond. Takes about 5 minutes.</p>
       <div class="intro-error" id="intro-error"></div>
-      <label for="participant-handle">Your participant ID</label>
-      <input type="text" id="participant-handle" placeholder="e.g. name from researcher" autocomplete="off" autocapitalize="none">
       <div class="intro-actions">
-        <button type="button" class="btn-primary" id="btn-start-new">Start</button>
+        <button type="button" class="btn-primary" id="btn-start-new">Begin</button>
         <button type="button" class="btn-secondary" id="btn-resume" style="display:none">Continue previous session</button>
       </div>
-      <p class="intro-note">Serve this folder over HTTP (<code>python -m http.server</code>) or load a local JSON file below. Pass <code>?data=path/to/file.json</code> in the URL to change the default data source.</p>
-      <label for="file-picker" style="margin-top:10px">Or load a local JSON file (no server needed)</label>
-      <input type="file" id="file-picker" accept=".json" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink2);margin-bottom:0;border:1px solid var(--border);padding:6px 8px;width:100%;cursor:pointer">
     </div>
   </div>
 
@@ -967,49 +963,19 @@
       if (saved && saved.phase === 'rating' && saved.rating_deck &&
           saved.current_idx < saved.rating_deck.length) {
         resumeBtn.style.display = 'block';
-        if (saved.participant_handle) {
-          document.getElementById('participant-handle').value = saved.participant_handle;
-        }
       } else {
         resumeBtn.style.display = 'none';
       }
     }
 
     document.getElementById('btn-start-new').addEventListener('click', function () {
-      var h = document.getElementById('participant-handle').value.trim();
-      if (!h) {
-        showIntroError('Please enter your participant ID.');
-        return;
-      }
       clearStorage();
-      startNewSession(h.toLowerCase());
+      startNewSession(uuid4());
     });
 
     document.getElementById('btn-resume').addEventListener('click', function () {
       if (resumeSession()) return;
       showIntroError('No session to resume.');
-    });
-
-    document.getElementById('file-picker').addEventListener('change', function (e) {
-      var file = e.target.files[0];
-      if (!file) return;
-      var h = document.getElementById('participant-handle').value.trim();
-      if (!h) { showIntroError('Please enter your participant ID before loading a file.'); return; }
-      showIntroError('');
-      document.getElementById('empty-msg').textContent = 'Loading aspects…';
-      document.getElementById('empty').style.display = 'block';
-      clearStorage();
-      var reader = new FileReader();
-      reader.onload = function (evt) {
-        try {
-          var data = JSON.parse(evt.target.result);
-          initSessionFromData(data, file.name, h.toLowerCase());
-        } catch (err) {
-          showIntroError('Invalid JSON: ' + String(err.message || err));
-          document.getElementById('empty-msg').textContent = 'Could not load data.';
-        }
-      };
-      reader.readAsText(file);
     });
 
     document.getElementById('btn-objective').addEventListener('click', function () { decide('objective'); });
